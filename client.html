@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat App</title>
+    <link rel="stylesheet" href="client.css">
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+    <style>
+   @import url('https://fonts.googleapis.com/css2?family=Raleway:wght@600&display=swap');
+
+.heading {
+    font-family: 'Raleway', sans-serif;
+    font-size: 2.5em;
+    text-align: center;
+    padding: 20px 10px;
+    background-color: #d9d5d5;
+    color: rgb(0, 0, 0);
+    margin: 0;
+    /* box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5); */
+    /* border-radius: 5px; */
+    /* margin-left: 25%; */
+    width:100%;
+    animation: slideIn 1s ease-out, fadeIn 2s ease-in;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(-100%);
+    }
+    to {
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+        .online-users {
+            width: 200px;
+            position: absolute;
+            top: 0;
+            right: 0;
+            background-color: #f1f1f1;
+            padding: 10px;
+            border-left: 1px solid #ccc;
+            height: 100%;
+            box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+            border-radius: 0 10px 10px 0;
+        }
+
+        .online-users h3 {
+            margin-top: 0;
+            font-size: 1.2em;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 10px;
+            padding-left: 10px;
+        }
+
+        .online-user {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 5px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .online-user:hover {
+            background-color: #e1e1e1;
+        }
+
+        .online-user .status-dot {
+            width: 10px;
+            height: 10px;
+            background-color: green;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .typing-indicator {
+            font-size: 0.9em;
+            color: #555;
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: none;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    
+
+    
+    <section class="msger">
+        <div class="heading">Chatter Up</div>
+        
+        <header class="msger-header"  id="header-title">
+            <div class="msger-header-title">
+                <i class="fas fa-comment-alt"></i> SimpleChat
+            </div>
+            <div class="msger-header-options">
+                <span><i class="fas fa-cog"></i></span>
+            </div>
+        </header>
+
+        <main class="msger-chat" id="message-list">
+            <!-- Initial bot message -->
+            <!-- <div class="msg left-msg">
+                <div class="msg-img" style="background-image: url(https://image.flaticon.com/icons/svg/327/327779.svg)"></div>
+                <div class="msg-bubble">
+                    <div class="msg-info">
+                        <div class="msg-info-name">BOT</div>
+                        <div class="msg-info-time">12:45</div>
+                    </div>
+                    <div class="msg-text">
+                        Hi, welcome to SimpleChat! Go ahead and send me a message. 😄
+                    </div>
+                </div>
+            </div> -->
+        </main>
+
+        <div class="typing-indicator" id="typing-indicator">Someone is typing...</div>
+
+        <form class="msger-inputarea" id="message-form">
+            <input type="text" class="msger-input" id="message-input" placeholder="Enter your message...">
+            <button type="submit" class="msger-send-btn">Send</button>
+        </form>
+    </section>
+
+    <div class="online-users" id="online-users">
+        <h3>Online Users</h3>
+        <!-- Online users will be appended here -->
+    </div>
+
+    <script src="http://localhost:3000/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io.connect('http://localhost:3000');
+        const username = prompt('Enter your name') || 'Anonymous';
+        socket.emit("join", username);
+
+        const headerTitle = document.getElementById("header-title");
+        headerTitle.innerHTML = `
+            <div class="msger-header-title">
+                <i class="fas fa-comment-alt"></i> Welcome ${username} to ChatterUp App
+            </div>
+            <div class="msger-header-options">
+                <span><i class="fas fa-cog"></i></span>
+            </div>
+        `;
+
+        
+
+        const messageInput = document.getElementById("message-input");
+        const messageList = document.getElementById("message-list");
+        const messageForm = document.getElementById("message-form");
+        const onlineUsersDiv = document.getElementById("online-users");
+        const typingIndicator = document.getElementById("typing-indicator");
+
+        let typingTimeout;
+
+        messageForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const message = messageInput.value;
+            if (message) {
+                socket.emit('new_message', message);
+                socket.emit('stop_typing');
+
+                appendMessage(username, message, 'right-msg');
+
+                messageInput.value = '';
+            }
+        });
+
+        messageInput.addEventListener('input', () => {
+            socket.emit('typing');
+            clearTimeout(typingTimeout);
+            typingTimeout = setTimeout(() => {
+                socket.emit('stop_typing');
+            }, 1000);
+        });
+
+        socket.on('load_messages', (messages) => {
+            messages.forEach(msg => {
+                appendMessage(msg.username, msg.message, msg.username === username ? 'right-msg' : 'left-msg', msg.timestamp);
+            });
+        });
+
+        socket.on('broadcast_message', (msg) => {
+            appendMessage(msg.username, msg.message, 'left-msg');
+        });
+
+        socket.on('update_user_list', (users) => {
+            updateOnlineUsers(users);
+        });
+
+        socket.on('typing', (user) => {
+            typingIndicator.textContent = `${user} is typing...`;
+            typingIndicator.style.display = 'block';
+        });
+
+        socket.on('stop_typing', () => {
+            typingIndicator.style.display = 'none';
+        });
+
+        function appendMessage(user, text, side, timestamp = new Date()) {
+            const timeString = new Date(timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            const msgHTML = `
+            <div class="msg ${side}">
+                <div class="msg-img" style="background-image: url(https://image.flaticon.com/icons/svg/145/145867.svg)"></div>
+                <div class="msg-bubble">
+                    <div class="msg-info">
+                        <div class="msg-info-name">${user}</div>
+                        <div class="msg-info-time">${timeString}</div>
+                    </div>
+                    <div class="msg-text">${text}</div>
+                </div>
+            </div>`;
+            messageList.insertAdjacentHTML('beforeend', msgHTML);
+            messageList.scrollTop = messageList.scrollHeight;
+        }
+
+        function updateOnlineUsers(users) {
+            onlineUsersDiv.innerHTML = '<h3>Online Users</h3>';
+            users.forEach(user => {
+                const userHTML = `
+                <div class="online-user">
+                    <div class="status-dot"></div>
+                    <span>${user}</span>
+                </div>`;
+                onlineUsersDiv.insertAdjacentHTML('beforeend', userHTML);
+            });
+        }
+    </script>
+</body>
+
+</html>
