@@ -44,9 +44,10 @@
 }
         .online-users {
             width: 200px;
-            position: absolute;
+            
             top: 0;
             right: 0;
+            margin-left: 10px;
             background-color: #f1f1f1;
             padding: 10px;
             border-left: 1px solid #ccc;
@@ -96,6 +97,8 @@
             display: none;
             text-align: center;
         }
+
+        
     </style>
 </head>
 
@@ -137,12 +140,13 @@
             <input type="text" class="msger-input" id="message-input" placeholder="Enter your message...">
             <button type="submit" class="msger-send-btn">Send</button>
         </form>
+        <div class="online-users" id="online-users">
+            <h3>Online Users</h3>
+            <!-- Online users will be appended here -->
+        </div>
     </section>
 
-    <div class="online-users" id="online-users">
-        <h3>Online Users</h3>
-        <!-- Online users will be appended here -->
-    </div>
+   
 
     <script src="http://localhost:3000/socket.io/socket.io.js"></script>
     <script>
