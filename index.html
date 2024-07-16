@@ -8,52 +8,56 @@
     <link rel="stylesheet" href="client.css">
     <script src="https://kit.fontawesome.com/a076d05399.js"></script>
     <style>
-   @import url('https://fonts.googleapis.com/css2?family=Raleway:wght@600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Raleway:wght@600&display=swap');
 
-.heading {
-    font-family: 'Raleway', sans-serif;
-    font-size: 2.5em;
-    text-align: center;
-    padding: 20px 10px;
-    background-color: #d9d5d5;
-    color: rgb(0, 0, 0);
-    margin: 0;
-    /* box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5); */
-    /* border-radius: 5px; */
-    /* margin-left: 25%; */
-    width:100%;
-    animation: slideIn 1s ease-out, fadeIn 2s ease-in;
-}
+        body {
+            font-family: 'Raleway', sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f9f9f9;
+        }
 
-@keyframes slideIn {
-    from {
-        transform: translateY(-100%);
-    }
-    to {
-        transform: translateY(0);
-    }
-}
+        .heading {
+            font-size: 2.5em;
+            text-align: center;
+            padding: 20px 10px;
+            background-color: #d9d5d5;
+            color: rgb(0, 0, 0);
+            margin: 0;
+            width: 100%;
+            animation: slideIn 1s ease-out, fadeIn 2s ease-in;
+        }
 
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
-}
+        @keyframes slideIn {
+            from {
+                transform: translateY(-100%);
+            }
+            to {
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
         .online-users {
             width: 200px;
-            
-            top: 0;
-            right: 0;
-            margin-left: 10px;
             background-color: #f1f1f1;
             padding: 10px;
             border-left: 1px solid #ccc;
             height: 100%;
             box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
             border-radius: 0 10px 10px 0;
+            margin-left: 20px;
         }
 
         .online-users h3 {
@@ -71,6 +75,7 @@
             padding: 5px;
             border-radius: 5px;
             transition: background-color 0.3s;
+            
         }
 
         .online-user:hover {
@@ -98,8 +103,109 @@
             text-align: center;
         }
 
-        
+        .main_page {
+            display: flex;
+            flex-direction: row;
+            height: 100%;
+            width: 100%;
+        }
+
+        .chatapp {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .msger {
+            display: flex;
+            flex-direction: column;
+            max-width: 867px;
+            width: 100%;
+            margin: 0 auto;
+            background-color: #fff;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+        }
+
+        .msger-header {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            background-color: #eee;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .msger-chat {
+            flex-grow: 1;
+            padding: 10px;
+            overflow-y: auto;
+        }
+
+        .msger-inputarea {
+            display: flex;
+            padding: 10px;
+            border-top: 1px solid #ddd;
+        }
+
+        .msger-input {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .msger-send-btn {
+            padding: 10px 15px;
+            border: none;
+            background-color: #4caf50;
+            color: white;
+            border-radius: 5px;
+            margin-left: 10px;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .main_page {
+                flex-direction: column;
+            }
+
+            .online-users {
+                width: 100%;
+                height: auto;
+                border-left: none;
+                border-top: 1px solid #ccc;
+                border-radius: 0 0 10px 10px;
+                box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+                margin-left: 0px;
+            }
+
+            .chatapp {
+                flex-grow: 1;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .heading {
+                font-size: 2em;
+            }
+
+            .msger-header {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .msger-inputarea {
+                flex-direction: column;
+            }
+
+            .msger-send-btn {
+                margin: 10px 0 0 0;
+                width: 100%;
+            }
+        }
     </style>
+
 </head>
 
 <body>
