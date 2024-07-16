@@ -11,54 +11,41 @@
         @import url('https://fonts.googleapis.com/css2?family=Raleway:wght@600&display=swap');
 
         body {
-            font-family: 'Raleway', sans-serif;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f9f9f9;
-        }
+            font-family: 'Montserrat', sans-serif;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: url('https://images.unsplash.com/photo-1579546929518-9e396f3cc809?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwzNjUyOXwwfDF8c2VhcmNofDF8fGFic3RyYWN0JTIwcGF0dGVybnxlbnwwfHx8fDE2ODk3Njk3NjQ&ixlib=rb-1.2.1&q=80&w=400') no-repeat center center fixed;
+    background-size: cover;
+}
 
-        .heading {
-            font-size: 2.5em;
-            text-align: center;
-            padding: 20px 10px;
-            background-color: #d9d5d5;
-            color: rgb(0, 0, 0);
-            margin: 0;
-            width: 100%;
-            animation: slideIn 1s ease-out, fadeIn 2s ease-in;
-        }
+.heading {
+    font-size: 2.5em;
+    text-align: center;
+    padding: 20px 10px;
+    background-color: rgba(180, 162, 99, 1); /* Adjust the alpha value (0.7) for transparency */
+    color: rgb(0, 0, 0);
+    margin: 0;
+    width: 100%;
+    animation: slideIn 1s ease-out, fadeIn 2s ease-in;
+}
 
-        @keyframes slideIn {
-            from {
-                transform: translateY(-100%);
-            }
-            to {
-                transform: translateY(0);
-            }
-        }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
-        }
 
+     
         .online-users {
-            width: 200px;
-            background-color: #f1f1f1;
-            padding: 10px;
-            border-left: 1px solid #ccc;
-            height: 100%;
-            box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
-            border-radius: 0 10px 10px 0;
-            margin-left: 20px;
-        }
+    width: 200px;
+    background-color: rgba(241, 241, 241, 0.4); /* Adjust the alpha value (0.7) for transparency */
+    padding: 10px;
+    border-left: 1px solid #ccc;
+    height: 100%;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+    border-radius: 0 10px 10px 0;
+    margin-left: 20px;
+}
+
 
         .online-users h3 {
             margin-top: 0;
@@ -123,6 +110,7 @@
             max-width: 867px;
             width: 100%;
             margin: 0 auto;
+           
             background-color: #fff;
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
             border-radius: 5px;
@@ -140,6 +128,7 @@
             flex-grow: 1;
             padding: 10px;
             overflow-y: auto;
+            
         }
 
         .msger-inputarea {
@@ -147,12 +136,14 @@
             padding: 10px;
             border-top: 1px solid #ddd;
         }
+        
 
         .msger-input {
             flex-grow: 1;
             padding: 10px;
             border: 1px solid #ddd;
             border-radius: 5px;
+            background-color: rgba(241, 241, 241, 0.4);
         }
 
         .msger-send-btn {
@@ -255,80 +246,80 @@
    
 
     <script src="http://localhost:3000/socket.io/socket.io.js"></script>
-    <script>
-        const socket = io.connect('http://localhost:3000');
-        const username = prompt('Enter your name') || 'Anonymous';
-        socket.emit("join", username);
+   <script>
+    const socket = io.connect('http://localhost:3000');
+    const username = prompt('Enter your name') || 'Anonymous';
+    socket.emit("join", username);
 
-        const headerTitle = document.getElementById("header-title");
-        headerTitle.innerHTML = `
-            <div class="msger-header-title">
-                <i class="fas fa-comment-alt"></i> Welcome ${username} to ChatterUp App
-            </div>
-            <div class="msger-header-options">
-                <span><i class="fas fa-cog"></i></span>
-            </div>
-        `;
+    const headerTitle = document.getElementById("header-title");
+    headerTitle.innerHTML = `
+        <div class="msger-header-title">
+            <i class="fas fa-comment-alt"></i> Welcome ${username} to ChatterUp App
+        </div>
+        <div class="msger-header-options">
+            <span><i class="fas fa-cog"></i></span>
+        </div>
+    `;
 
-        
+    const messageInput = document.getElementById("message-input");
+    const messageList = document.getElementById("message-list");
+    const messageForm = document.getElementById("message-form");
+    const onlineUsersDiv = document.getElementById("online-users");
+    const typingIndicator = document.getElementById("typing-indicator");
 
-        const messageInput = document.getElementById("message-input");
-        const messageList = document.getElementById("message-list");
-        const messageForm = document.getElementById("message-form");
-        const onlineUsersDiv = document.getElementById("online-users");
-        const typingIndicator = document.getElementById("typing-indicator");
+    let typingTimeout;
 
-        let typingTimeout;
+    socket.avatar='https://img.freepik.com/premium-vector/man-character_665280-46970.jpg';
 
-        messageForm.addEventListener('submit', function (e) {
-            e.preventDefault();
-            const message = messageInput.value;
-            if (message) {
-                socket.emit('new_message', message);
-                socket.emit('stop_typing');
+    messageForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        const message = messageInput.value;
+        if (message) {
+            socket.emit('new_message', message);
+            socket.emit('stop_typing');
 
-                appendMessage(username, message, 'right-msg');
+            appendMessage(username, message, 'right-msg', socket.avatar);
 
-                messageInput.value = '';
-            }
+            messageInput.value = '';
+        }
+    });
+
+    messageInput.addEventListener('input', () => {
+        socket.emit('typing');
+        clearTimeout(typingTimeout);
+        typingTimeout = setTimeout(() => {
+            socket.emit('stop_typing');
+        }, 1000);
+    });
+
+    socket.on('load_messages', (messages) => {
+        messages.forEach(msg => {
+            appendMessage(msg.username, msg.message, msg.username === username ? 'right-msg' : 'left-msg', msg.avatar, msg.timestamp);
         });
+    });
 
-        messageInput.addEventListener('input', () => {
-            socket.emit('typing');
-            clearTimeout(typingTimeout);
-            typingTimeout = setTimeout(() => {
-                socket.emit('stop_typing');
-            }, 1000);
-        });
+    socket.on('broadcast_message', (msg) => {
+        appendMessage(msg.username, msg.message, 'left-msg', msg.avatar);
+    });
 
-        socket.on('load_messages', (messages) => {
-            messages.forEach(msg => {
-                appendMessage(msg.username, msg.message, msg.username === username ? 'right-msg' : 'left-msg', msg.timestamp);
-            });
-        });
+    socket.on('update_user_list', (users) => {
+        updateOnlineUsers(users);
+    });
 
-        socket.on('broadcast_message', (msg) => {
-            appendMessage(msg.username, msg.message, 'left-msg');
-        });
+    socket.on('typing', (user) => {
+        typingIndicator.textContent = `${user} is typing...`;
+        typingIndicator.style.display = 'block';
+    });
 
-        socket.on('update_user_list', (users) => {
-            updateOnlineUsers(users);
-        });
+    socket.on('stop_typing', () => {
+        typingIndicator.style.display = 'none';
+    });
 
-        socket.on('typing', (user) => {
-            typingIndicator.textContent = `${user} is typing...`;
-            typingIndicator.style.display = 'block';
-        });
-
-        socket.on('stop_typing', () => {
-            typingIndicator.style.display = 'none';
-        });
-
-        function appendMessage(user, text, side, timestamp = new Date()) {
-            const timeString = new Date(timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            const msgHTML = `
+    function appendMessage(user, text, side, avatar, timestamp = new Date()) {
+        const timeString = new Date(timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        const msgHTML = `
             <div class="msg ${side}">
-                <div class="msg-img" style="background-image: url(https://image.flaticon.com/icons/svg/145/145867.svg)"></div>
+                <div class="msg-img" style="background-image: url(${avatar})"></div>
                 <div class="msg-bubble">
                     <div class="msg-info">
                         <div class="msg-info-name">${user}</div>
@@ -337,22 +328,23 @@
                     <div class="msg-text">${text}</div>
                 </div>
             </div>`;
-            messageList.insertAdjacentHTML('beforeend', msgHTML);
-            messageList.scrollTop = messageList.scrollHeight;
-        }
+        messageList.insertAdjacentHTML('beforeend', msgHTML);
+        messageList.scrollTop = messageList.scrollHeight;
+    }
 
-        function updateOnlineUsers(users) {
-            onlineUsersDiv.innerHTML = '<h3>Online Users</h3>';
-            users.forEach(user => {
-                const userHTML = `
-                <div class="online-user">
-                    <div class="status-dot"></div>
-                    <span>${user}</span>
-                </div>`;
-                onlineUsersDiv.insertAdjacentHTML('beforeend', userHTML);
-            });
-        }
-    </script>
+    function updateOnlineUsers(users) {
+        onlineUsersDiv.innerHTML = '<h3>Online Users</h3>';
+        users.forEach(user => {
+            const userHTML = `
+            <div class="online-user">
+                <div class="status-dot"></div>
+                <span>${user}</span>
+            </div>`;
+            onlineUsersDiv.insertAdjacentHTML('beforeend', userHTML);
+        });
+    }
+</script>
+
 </body>
 
 </html>
