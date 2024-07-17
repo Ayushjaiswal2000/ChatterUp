@@ -2,6 +2,7 @@ import express from 'express';
 import { Server } from 'socket.io';
 import cors from 'cors';
 import http from 'http';
+import path, { dirname } from 'path';
 import { connect } from './config.js';
 import { chatModel } from './chat.schema.js';
 
@@ -13,6 +14,16 @@ const io = new Server(server, {
         methods: ["GET", "POST"]
     }
 });
+const __dirname = path.resolve();
+
+// Serve static files from the 'chatterup' directory
+app.use(express.static(__dirname));
+
+// Define a route to serve your HTML file
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
+
 
 app.use(cors());
 
@@ -86,6 +97,8 @@ io.on('connection', (socket) => {
         io.emit('update_user_list', onlineUsers);
     });
 });
+
+
 
 server.listen(3200, () => {
     console.log("App is listening on port 3200");
