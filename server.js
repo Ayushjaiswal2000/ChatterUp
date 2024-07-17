@@ -31,11 +31,11 @@ io.on('connection', (socket) => {
         socket.username = username;
         onlineUsers.push(username);
         io.emit('update_user_list', onlineUsers);
-    
+
         try {
             const messages = await chatModel.find().sort({ timestamp: 1 }).limit(50);
             socket.emit('load_messages', messages);
-    
+
             let user = await chatModel.findOne({ username });
             if (!user) {
                 user = new chatModel({
@@ -56,7 +56,7 @@ io.on('connection', (socket) => {
             message: message,
             avatar: socket.avatar
         };
-    
+
         try {
             const newChat = new chatModel({
                 username: socket.username,
@@ -64,7 +64,7 @@ io.on('connection', (socket) => {
                 timestamp: new Date(),
                 avatar: socket.avatar
             });
-    
+
             await newChat.save();
             socket.broadcast.emit('broadcast_message', userMessage);
         } catch (err) {
@@ -87,6 +87,6 @@ io.on('connection', (socket) => {
     });
 });
 
-server.listen(3000, () => {
-    console.log("App is listening on port 3000");
+server.listen(3200, () => {
+    console.log("App is listening on port 3200");
 });
