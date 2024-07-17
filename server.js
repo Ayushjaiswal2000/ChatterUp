@@ -14,15 +14,14 @@ const io = new Server(server, {
         methods: ["GET", "POST"]
     }
 });
-const __dirname = path.dirname(new URL(import.meta.url).pathname);
+const __dirname = path.resolve();
 
-// Serve static files from the 'public' directory
+// Serve static files from the 'chatterup' directory
 app.use(express.static(__dirname));
 
 // Define a route to serve your HTML file
-// Define a route to serve your HTML file
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname ,'index.html'));
+    res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 
