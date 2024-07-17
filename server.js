@@ -14,15 +14,16 @@ const io = new Server(server, {
         methods: ["GET", "POST"]
     }
 });
-// const __dirname = path.resolve();
+const __dirname = path.dirname(new URL(import.meta.url).pathname);
 
-// // Serve static files from the 'chatterup' directory
-// app.use(express.static(__dirname));
+// Serve static files from the 'public' directory
+app.use(express.static(__dirname));
 
-// // Define a route to serve your HTML file
-// app.get('/', (req, res) => {
-//     res.sendFile(path.join(__dirname, 'index.html'));
-// });
+// Define a route to serve your HTML file
+// Define a route to serve your HTML file
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname ,'index.html'));
+});
 
 
 app.use(cors());
