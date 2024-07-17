@@ -15,24 +15,9 @@ Persistent chat history stored in MongoDB
 
 Default user avatars
 
-Technologies Used- 
+Technologies Used- Node.js, Express , Socket.io ,MongoDB, Mongoose  HTML, CSS, JavaScript
 
-Node.js 
-
-Express  
-
-Socket.io 
-
-MongoDB 
-
-Mongoose 
-
-HTML, CSS, JavaScript
-
-Prerequisites-
-Node.js 
-
-MongoDB 
+Prerequisites- Node.js ,MongoDB ,
 
 
 Usage-
