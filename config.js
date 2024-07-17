@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 export const connect = async()=>{
-    await mongoose.connect("mongodb://127.0.0.1:27017/chatApp", {
+    await mongoose.connect("mongodb+srv://ayushjaiswal312:dn48H6iMWWwjRyRt@cluster0.9xasrmo.mongodb.net/", {
         useNewUrlParser: true,
         useUnifiedTopology: true
     });
